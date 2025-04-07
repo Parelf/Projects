@@ -1,0 +1,31 @@
+public class TimeAnchor {
+    private Instant timestamp;
+    private ZoneId zone;
+ 
+    public TimeAnchor(Instant instant, ZoneId zone) {
+        this.timestamp = instant;
+        this.zone = zone;
+    }
+ 
+    public TimeAnchor(ZonedDateTime zdt) {
+        this.timestamp = zdt.toInstant();
+        this.zone = zdt.getZone();
+    }
+ 
+    public ZonedDateTime getZonedDateTime() {
+        return timestamp.atZone(zone);
+    }
+ 
+    public Instant getInstant() {
+        return timestamp;
+    }
+ 
+    public ZoneId getLocation() {
+        return zone;
+    }
+ 
+    // For changing areas. Access modifier can be changed accodingly.
+    public void setLocation(ZoneId newZone) {
+        this.zone = newZone;
+    }
+}
