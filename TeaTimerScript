@@ -1,0 +1,45 @@
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.*;
+
+public class TeaTimer {
+
+    public static void main(String[] args) {
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+        Runnable teaReminder = () -> {
+            System.out.println("Time to hydrate and enjoy some tea! ☕ " + java.time.LocalTime.now());
+            playSound("reminder.wav");
+        };
+
+        // Initial delay (e.g., 0) and then run every 2 hours. If you change, please change the Thread.sleep as well.
+        scheduler.scheduleAtFixedRate(teaReminder, 0, 2, TimeUnit.HOURS);
+    }
+
+// Note: works best with wav files. Default is 2 seconds long max.
+    private static void playSound(String filePath) {
+        try {
+            File soundFile = new File(filePath);
+            if (!soundFile.exists()) {
+                System.err.println("Sound file not found: " + filePath);
+                return;
+            }
+
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+            Clip clip = AudioSystem.getClip();
+
+            clip.open(audioIn);
+            clip.start();
+
+            // Wait until the clip is done
+            Thread.sleep(2000);  // Sleep for 2 seconds to let it play
+
+            clip.close();
+            audioIn.close();
+        // For errors
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
